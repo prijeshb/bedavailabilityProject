@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 process.env.TZ = 'Asia/Calcutta';
-(new Date().toString())
+
 app.use(cors())
 
 app.get("/",(req,res) => {
@@ -57,7 +57,13 @@ app.get("/availableBeds",(req,res) => {
     if(!path)
         path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
     fs.readFile(`.${path}`,(err,data) => {
-        if(err) throw err
+        if(err)
+          {
+            path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
+            fs.readFile(`.${path}`,(err,data) => {
+                res.json(JSON.parse(data));
+            })
+          }  
         res.json(JSON.parse(data));
     })
 })
