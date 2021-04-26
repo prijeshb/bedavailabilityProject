@@ -4,7 +4,8 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 
-
+process.env.TZ = 'Asia/Calcutta';
+(new Date().toString())
 app.use(cors())
 
 app.get("/",(req,res) => {
