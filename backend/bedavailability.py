@@ -87,6 +87,6 @@ DATA_PATH = DIR_PATH + filestring
 
 if not os.path.isdir(DIR_PATH):
     os.makedirs(DIR_PATH)
-
+print(DATA_PATH)
 with open('{}'.format(DATA_PATH),'w+') as f:
      json.dump(bedData,f)

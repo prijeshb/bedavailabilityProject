@@ -59,7 +59,7 @@ app.get("/availableBeds",(req,res) => {
     fs.readFile(`.${path}`,(err,data) => {
         if(err)
           {
-            path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
+            let path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
             fs.readFile(`.${path}`,(err,data) => {
                 res.json(JSON.parse(data));
             })
