@@ -5,7 +5,9 @@ import json
 import re
 import datetime
 import os
-curr = datetime.datetime.now()
+from pytz import timezone
+
+curr = datetime.datetime.now(timezone('Asia/Calcutta'))
 
 
 headers = {"User-Agent": "Mozilla/5.0 (Linux; U; Android 4.2.2; he-il; NEO-X5-116A Build/JDQ39) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30"}
