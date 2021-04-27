@@ -9,8 +9,9 @@ process.env.TZ = 'Asia/Calcutta';
 app.use(cors())
 
 app.get("/",(req,res) => {
-    res.json({jsodn:"Hey there !!🥱"})
+    res.json({jsodn:"Hey there, just tryinng to help !!🥱"})
 })
+const osPath = path.sep;
 const convertToFormattedDigit  = (value) => {
     let tempValue = null;
     let prefix = "0";
@@ -34,7 +35,7 @@ const getFileStringForCurrTime = () => {
     let currDateTime = new Date();
     let fileString = '';
     let filePath = '';
-    let osPath = path.sep;
+    
     let dataPath = '';
     let { formattedDate, formattedMont, formattedHr } = getFormattedDateTimeValue(currDateTime)
     let currMin = currDateTime.getMinutes();
