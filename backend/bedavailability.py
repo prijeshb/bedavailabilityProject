@@ -48,47 +48,48 @@ ccic = "CCIC"
 bedData = []
 
 table = soup.find(id="accordionExample")
-for tr in table.find_all(class_="custom-card"):
-    hospitalData = {}
-    hospitalVacantBedTypes = []
-    miscHospitalData = tr.find_all(class_="hospital-info")[0].get('href')
-    cleanedHospitalData = miscHospitalData.split('showpopup')[1].strip('();').split("'")
-    hospitalData['hospitalName'] = cleanedHospitalData[1]
-    hospitalData['hospitalAddress'] = re.sub('\n',"",cleanedHospitalData[3])
-    hospitalData['hospitalContact'] = cleanedHospitalData[5]
-    hospitalData['hospitalLastUpdatedAt'] = tr.find_all(class_="badge-lastupdated")[0].text.split("-")[1]
-    hospitalData['hospitalAvailableBeds'] =  tr.find_all(class_="pr-2")[0].text.split("-")[1]
-    hospitalData['hospitalTotalBeds'] = tr.find_all(class_="count-text")[0].text.split("-")[1]
+if (table):
+    for tr in table.find_all(class_="custom-card"):
+        hospitalData = {}
+        hospitalVacantBedTypes = []
+        miscHospitalData = tr.find_all(class_="hospital-info")[0].get('href')
+        cleanedHospitalData = miscHospitalData.split('showpopup')[1].strip('();').split("'")
+        hospitalData['hospitalName'] = cleanedHospitalData[1]
+        hospitalData['hospitalAddress'] = re.sub('\n',"",cleanedHospitalData[3])
+        hospitalData['hospitalContact'] = cleanedHospitalData[5]
+        hospitalData['hospitalLastUpdatedAt'] = tr.find_all(class_="badge-lastupdated")[0].text.split("-")[1]
+        hospitalData['hospitalAvailableBeds'] =  tr.find_all(class_="pr-2")[0].text.split("-")[1]
+        hospitalData['hospitalTotalBeds'] = tr.find_all(class_="count-text")[0].text.split("-")[1]
 
-    bedtypesList = tr.find(class_="card-body").find_all('li')
-    for bedTypeCont in bedtypesList:
-        hospitalBedType = {}
-        hospitalBedType['type'] = bedTypeCont.find(class_="caption-text").text
-        hospitalBedType['available'] = bedTypeCont.find(class_="count-text").text
-        hospitalVacantBedTypes.append(hospitalBedType)
+        bedtypesList = tr.find(class_="card-body").find_all('li')
+        for bedTypeCont in bedtypesList:
+            hospitalBedType = {}
+            hospitalBedType['type'] = bedTypeCont.find(class_="caption-text").text
+            hospitalBedType['available'] = bedTypeCont.find(class_="count-text").text
+            hospitalVacantBedTypes.append(hospitalBedType)
 
-    hospitalData['hospitalVacantBedTypes'] = hospitalVacantBedTypes
-    
-    bedData.append(hospitalData)
+        hospitalData['hospitalVacantBedTypes'] = hospitalVacantBedTypes
+        
+        bedData.append(hospitalData)
 
-formattedYr =  "{}".format(curr.year)
-formattedat = ("{}".format(curr.day),"0{}".format(curr.day))[len(str(curr.day)) < 2 ] 
-formattedMo = ("{}".format(curr.month),"0{}".format(curr.month))[len(str(curr.month)) < 2]
-# if(0 <= curr.minute < 15):
-#     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "00" + ".json"
-# elif 15 <= curr.minute < 30 :
-#     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "15" + ".json" 
-# elif 30 <= curr.minute < 45:
-#     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "30" + ".json"
-# else:
-#     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "45" + ".json"
-filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + ".json"
-filePath  = "" + "{}".format(formattedYr) + "{}{}".format(os.sep,formattedMo) + "{}{}".format(os.sep,formattedat)
-DIR_PATH = ".{}data{}".format(os.sep,os.sep) + filePath + "{}".format(os.sep)
-DATA_PATH = DIR_PATH + filestring
+    formattedYr =  "{}".format(curr.year)
+    formattedat = ("{}".format(curr.day),"0{}".format(curr.day))[len(str(curr.day)) < 2 ] 
+    formattedMo = ("{}".format(curr.month),"0{}".format(curr.month))[len(str(curr.month)) < 2]
+    # if(0 <= curr.minute < 15):
+    #     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "00" + ".json"
+    # elif 15 <= curr.minute < 30 :
+    #     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "15" + ".json" 
+    # elif 30 <= curr.minute < 45:
+    #     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "30" + ".json"
+    # else:
+    #     filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + "45" + ".json"
+    filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + ".json"
+    filePath  = "" + "{}".format(formattedYr) + "{}{}".format(os.sep,formattedMo) + "{}{}".format(os.sep,formattedat)
+    DIR_PATH = ".{}data{}".format(os.sep,os.sep) + filePath + "{}".format(os.sep)
+    DATA_PATH = DIR_PATH + filestring
 
-if not os.path.isdir(DIR_PATH):
-    os.makedirs(DIR_PATH)
-print(DATA_PATH)
-with open('{}'.format(DATA_PATH),'w+') as f:
-     json.dump(bedData,f)
+    if not os.path.isdir(DIR_PATH):
+        os.makedirs(DIR_PATH)
+    print(DATA_PATH)
+    with open('{}'.format(DATA_PATH),'w+') as f:
+        json.dump(bedData,f)

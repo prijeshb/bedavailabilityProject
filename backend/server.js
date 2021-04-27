@@ -56,16 +56,17 @@ const getFileStringForCurrTime = () => {
 app.get("/availableBeds",(req,res) => {
     let path = getFileStringForCurrTime();
     if(!path)
-        path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
+        path = `${osPath}data${osPath}`+  `default${osPath}` + "default.json"
     fs.readFile(`.${path}`,(err,data) => {
         if(err)
           {
-            let path = `${osPath}data${osPath}`+  `default${path.sep}` + "default.json"
-            fs.readFile(`.${path}`,(err,data) => {
+            let Failedpath = `${osPath}data${osPath}` + "default.json"
+            fs.readFile(`.${Failedpath}`,(err,data) => {
                 res.json(JSON.parse(data));
             })
-          }  
-        res.json(JSON.parse(data));
+          }
+          else  
+            res.json(JSON.parse(data));
     })
 })
 
