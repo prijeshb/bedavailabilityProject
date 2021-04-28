@@ -69,9 +69,9 @@ if (table):
             hospitalVacantBedTypes.append(hospitalBedType)
 
         hospitalData['hospitalVacantBedTypes'] = hospitalVacantBedTypes
-        
         bedData.append(hospitalData)
 
+    bedData.append({"dataFrom":"http://office.suratsmartcity.com"})  
     formattedYr =  "{}".format(curr.year)
     formattedat = ("{}".format(curr.day),"0{}".format(curr.day))[len(str(curr.day)) < 2 ] 
     formattedMo = ("{}".format(curr.month),"0{}".format(curr.month))[len(str(curr.month)) < 2]
@@ -93,3 +93,47 @@ if (table):
     print(DATA_PATH)
     with open('{}'.format(DATA_PATH),'w+') as f:
         json.dump(bedData,f)
+else :
+    responseFromImaSurat = requests.get("https://imasurat.com/Covid-19-hospital-bed-availability", headers=headers)
+    webpage = responseFromImaSurat.content
+
+    soup = BeautifulSoup(webpage, "html.parser")
+    rows = soup.find(id="listings")
+    if (rows):
+        for row in rows.find_all('div'):
+            hospitalData = {}
+            hospitalVacantBedTypes = []
+            hospitalData['hospitalName'] = row.find('h5').text.strip()
+            data = row.find_all('p')
+            if (re.search('oxygen',data[0].text.split(":")[0])):
+                hospitalBedType = {}
+                hospitalBedType['type'] = "oxygen"
+                hospitalBedType['available'] = re.sub('\n',"",data[0].text.split(":")[1]).strip()
+                hospitalVacantBedTypes.append(hospitalBedType)  
+            if (re.search('Ventilator',data[1].text.split(":")[0])):
+                hospitalBedType = {}
+                hospitalBedType['type'] = "Ventilator(BiPap)"
+                hospitalBedType['available'] = re.sub('\n',"",data[1].text.split(":")[1]).strip()
+                hospitalVacantBedTypes.append(hospitalBedType)
+            
+            hospitalData['hospitalVacantBedTypes'] = hospitalVacantBedTypes
+            hospitalData['hospitalLastUpdatedAt'] = data[2].text.strip()        
+            hospitalData['hospitalContact'] = re.sub('\r',"",re.sub('\n',"",data[3].text)).strip().split(" ")
+            hospitalData['hospitalAddress'] = re.sub('\r',"",re.sub('\n',"",data[len(data)-1].text)).strip() 
+            bedData.append(hospitalData)
+
+        bedData.append({"dataFrom":"https://imasurat.com/"})    
+        formattedYr =  "{}".format(curr.year)
+        formattedat = ("{}".format(curr.day),"0{}".format(curr.day))[len(str(curr.day)) < 2 ] 
+        formattedMo = ("{}".format(curr.month),"0{}".format(curr.month))[len(str(curr.month)) < 2]
+        filestring = "" +  formattedat + formattedMo + formattedYr + ("{}".format(curr.hour),"0{}".format(curr.hour))[len(str(curr.hour)) < 2 ] + ".json"
+        filePath  = "" + "{}".format(formattedYr) + "{}{}".format(os.sep,formattedMo) + "{}{}".format(os.sep,formattedat)
+        DIR_PATH = ".{}data{}".format(os.sep,os.sep) + filePath + "{}".format(os.sep)
+        DATA_PATH = DIR_PATH + filestring
+
+        if not os.path.isdir(DIR_PATH):
+            os.makedirs(DIR_PATH)
+        print(DATA_PATH)
+        with open('{}'.format(DATA_PATH),'w+') as f:
+            json.dump(bedData,f)       
+        
